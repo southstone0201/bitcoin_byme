@@ -1,0 +1,93 @@
+#!/sbin/openrc-run
+
+# backward compatibility for existing gentoo layout 
+#
+if [ -d "/var/lib/namseokcoin/.namseokcoin" ]; then
+	NAMSEOKCOIND_DEFAULT_DATADIR="/var/lib/namseokcoin/.namseokcoin"
+else
+	NAMSEOKCOIND_DEFAULT_DATADIR="/var/lib/namseokcoind"
+fi
+
+NAMSEOKCOIND_CONFIGFILE=${NAMSEOKCOIND_CONFIGFILE:-/etc/namseokcoin/namseokcoin.conf}
+NAMSEOKCOIND_PIDDIR=${NAMSEOKCOIND_PIDDIR:-/var/run/namseokcoind}
+NAMSEOKCOIND_PIDFILE=${NAMSEOKCOIND_PIDFILE:-${NAMSEOKCOIND_PIDDIR}/namseokcoind.pid}
+NAMSEOKCOIND_DATADIR=${NAMSEOKCOIND_DATADIR:-${NAMSEOKCOIND_DEFAULT_DATADIR}}
+NAMSEOKCOIND_USER=${NAMSEOKCOIND_USER:-${NAMSEOKCOIN_USER:-namseokcoin}}
+NAMSEOKCOIND_GROUP=${NAMSEOKCOIND_GROUP:-namseokcoin}
+NAMSEOKCOIND_BIN=${NAMSEOKCOIND_BIN:-/usr/bin/namseokcoind}
+NAMSEOKCOIND_NICE=${NAMSEOKCOIND_NICE:-${NICELEVEL:-0}}
+NAMSEOKCOIND_OPTS="${NAMSEOKCOIND_OPTS:-${NAMSEOKCOIN_OPTS}}"
+
+name="Namseokcoin Core Daemon"
+description="Namseokcoin cryptocurrency P2P network daemon"
+
+command="/usr/bin/namseokcoind"
+command_args="-pid=\"${NAMSEOKCOIND_PIDFILE}\" \
+		-conf=\"${NAMSEOKCOIND_CONFIGFILE}\" \
+		-datadir=\"${NAMSEOKCOIND_DATADIR}\" \
+		-daemon \
+		${NAMSEOKCOIND_OPTS}"
+
+required_files="${NAMSEOKCOIND_CONFIGFILE}"
+start_stop_daemon_args="-u ${NAMSEOKCOIND_USER} \
+			-N ${NAMSEOKCOIND_NICE} -w 2000"
+pidfile="${NAMSEOKCOIND_PIDFILE}"
+
+# The retry schedule to use when stopping the daemon. Could be either
+# a timeout in seconds or multiple signal/timeout pairs (like
+# "SIGKILL/180 SIGTERM/300")
+retry="${NAMSEOKCOIND_SIGTERM_TIMEOUT}"
+
+depend() {
+	need localmount net
+}
+
+# verify
+# 1) that the datadir exists and is writable (or create it)
+# 2) that a directory for the pid exists and is writable
+# 3) ownership and permissions on the config file
+start_pre() {
+	checkpath \
+	-d \
+	--mode 0750 \
+	--owner "${NAMSEOKCOIND_USER}:${NAMSEOKCOIND_GROUP}" \
+	"${NAMSEOKCOIND_DATADIR}"
+
+	checkpath \
+	-d \
+	--mode 0755 \
+	--owner "${NAMSEOKCOIND_USER}:${NAMSEOKCOIND_GROUP}" \
+	"${NAMSEOKCOIND_PIDDIR}"
+
+	checkpath -f \
+	-o "${NAMSEOKCOIND_USER}:${NAMSEOKCOIND_GROUP}" \
+	-m 0660 \
+	"${NAMSEOKCOIND_CONFIGFILE}"
+
+	checkconfig || return 1
+}
+
+checkconfig()
+{
+	if grep -qs '^rpcuser=' "${NAMSEOKCOIND_CONFIGFILE}" && \
+		! grep -qs '^rpcpassword=' "${NAMSEOKCOIND_CONFIGFILE}" ; then
+		eerror ""
+		eerror "ERROR: You must set a secure rpcpassword to run namseokcoind."
+		eerror "The setting must appear in ${NAMSEOKCOIND_CONFIGFILE}"
+		eerror ""
+		eerror "This password is security critical to securing wallets "
+		eerror "and must not be the same as the rpcuser setting."
+		eerror "You can generate a suitable random password using the following "
+		eerror "command from the shell:"
+		eerror ""
+		eerror "bash -c 'tr -dc a-zA-Z0-9 < /dev/urandom | head -c32 && echo'"
+		eerror ""
+		eerror "It is recommended that you also set alertnotify so you are "
+		eerror "notified of problems:"
+		eerror ""
+		eerror "ie: alertnotify=echo %%s | mail -s \"Namseokcoin Alert\"" \
+			"admin@foo.com"
+		eerror ""
+		return 1
+	fi
+}

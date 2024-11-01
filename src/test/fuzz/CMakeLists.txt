@@ -1,4 +1,4 @@
-# Copyright (c) 2023-present The Bitcoin Core developers
+# Copyright (c) 2023-present The Namseokcoin Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or https://opensource.org/license/mit/.
 
@@ -131,9 +131,9 @@ add_executable(fuzz
 target_link_libraries(fuzz
   core_interface
   test_fuzz
-  bitcoin_cli
-  bitcoin_common
-  bitcoin_util
+  namseokcoin_cli
+  namseokcoin_common
+  namseokcoin_util
   minisketch
   leveldb
   univalue

@@ -1,9 +1,9 @@
-// Copyright (c) 2017-2022 The Bitcoin Core developers
+// Copyright (c) 2017-2022 The Namseokcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_RPC_UTIL_H
-#define BITCOIN_RPC_UTIL_H
+#ifndef NAMSEOKCOIN_RPC_UTIL_H
+#define NAMSEOKCOIN_RPC_UTIL_H
 
 #include <addresstype.h>
 #include <consensus/amount.h>
@@ -118,8 +118,8 @@ int ParseVerbosity(const UniValue& arg, int default_verbosity);
  */
 CAmount AmountFromValue(const UniValue& value, int decimals = 8);
 /**
- * Parse a json number or string, denoting BTC/kvB, into a CFeeRate (sat/kvB).
- * Reject negative values or rates larger than 1BTC/kvB.
+ * Parse a json number or string, denoting NSC/kvB, into a CFeeRate (sat/kvB).
+ * Reject negative values or rates larger than 1NSC/kvB.
  */
 CFeeRate ParseFeeRate(const UniValue& json);
 
@@ -512,4 +512,4 @@ private:
 void PushWarnings(const UniValue& warnings, UniValue& obj);
 void PushWarnings(const std::vector<bilingual_str>& warnings, UniValue& obj);
 
-#endif // BITCOIN_RPC_UTIL_H
+#endif // NAMSEOKCOIN_RPC_UTIL_H

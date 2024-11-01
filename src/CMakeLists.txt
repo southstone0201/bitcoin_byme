@@ -1,27 +1,27 @@
-# Copyright (c) 2023-present The Bitcoin Core developers
+# Copyright (c) 2023-present The Namseokcoin Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or https://opensource.org/license/mit/.
 
 include(GNUInstallDirs)
 include(AddWindowsResources)
 
-configure_file(${PROJECT_SOURCE_DIR}/cmake/bitcoin-build-config.h.in bitcoin-build-config.h USE_SOURCE_PERMISSIONS @ONLY)
+configure_file(${PROJECT_SOURCE_DIR}/cmake/namseokcoin-build-config.h.in namseokcoin-build-config.h USE_SOURCE_PERMISSIONS @ONLY)
 include_directories(${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
 
 add_custom_target(generate_build_info
-  BYPRODUCTS ${PROJECT_BINARY_DIR}/src/bitcoin-build-info.h
-  COMMAND ${CMAKE_COMMAND} -DBUILD_INFO_HEADER_PATH=${PROJECT_BINARY_DIR}/src/bitcoin-build-info.h -DSOURCE_DIR=${PROJECT_SOURCE_DIR} -P ${PROJECT_SOURCE_DIR}/cmake/script/GenerateBuildInfo.cmake
-  COMMENT "Generating bitcoin-build-info.h"
+  BYPRODUCTS ${PROJECT_BINARY_DIR}/src/namseokcoin-build-info.h
+  COMMAND ${CMAKE_COMMAND} -DBUILD_INFO_HEADER_PATH=${PROJECT_BINARY_DIR}/src/namseokcoin-build-info.h -DSOURCE_DIR=${PROJECT_SOURCE_DIR} -P ${PROJECT_SOURCE_DIR}/cmake/script/GenerateBuildInfo.cmake
+  COMMENT "Generating namseokcoin-build-info.h"
   VERBATIM
 )
-add_library(bitcoin_clientversion OBJECT EXCLUDE_FROM_ALL
+add_library(namseokcoin_clientversion OBJECT EXCLUDE_FROM_ALL
   clientversion.cpp
 )
-target_link_libraries(bitcoin_clientversion
+target_link_libraries(namseokcoin_clientversion
   PRIVATE
     core_interface
 )
-add_dependencies(bitcoin_clientversion generate_build_info)
+add_dependencies(namseokcoin_clientversion generate_build_info)
 
 add_subdirectory(crypto)
 add_subdirectory(univalue)
@@ -75,7 +75,7 @@ add_subdirectory(secp256k1)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 string(APPEND CMAKE_C_COMPILE_OBJECT " ${APPEND_CPPFLAGS} ${APPEND_CFLAGS}")
 
-add_library(bitcoin_consensus STATIC EXCLUDE_FROM_ALL
+add_library(namseokcoin_consensus STATIC EXCLUDE_FROM_ALL
   arith_uint256.cpp
   consensus/merkle.cpp
   consensus/tx_check.cpp
@@ -88,10 +88,10 @@ add_library(bitcoin_consensus STATIC EXCLUDE_FROM_ALL
   script/script_error.cpp
   uint256.cpp
 )
-target_link_libraries(bitcoin_consensus
+target_link_libraries(namseokcoin_consensus
   PRIVATE
     core_interface
-    bitcoin_crypto
+    namseokcoin_crypto
     secp256k1
 )
 
@@ -100,8 +100,8 @@ if(WITH_ZMQ)
 endif()
 
 # Home for common functionality shared by different executables and libraries.
-# Similar to `bitcoin_util` library, but higher-level.
-add_library(bitcoin_common STATIC EXCLUDE_FROM_ALL
+# Similar to `namseokcoin_util` library, but higher-level.
+add_library(namseokcoin_common STATIC EXCLUDE_FROM_ALL
   addresstype.cpp
   base58.cpp
   bech32.cpp
@@ -152,11 +152,11 @@ add_library(bitcoin_common STATIC EXCLUDE_FROM_ALL
   script/signingprovider.cpp
   script/solver.cpp
 )
-target_link_libraries(bitcoin_common
+target_link_libraries(namseokcoin_common
   PRIVATE
     core_interface
-    bitcoin_consensus
-    bitcoin_util
+    namseokcoin_consensus
+    namseokcoin_util
     univalue
     secp256k1
     Boost::headers
@@ -170,26 +170,26 @@ if(ENABLE_WALLET)
   add_subdirectory(wallet)
 
   if(BUILD_WALLET_TOOL)
-    add_executable(bitcoin-wallet
-      bitcoin-wallet.cpp
-      init/bitcoin-wallet.cpp
+    add_executable(namseokcoin-wallet
+      namseokcoin-wallet.cpp
+      init/namseokcoin-wallet.cpp
       wallet/wallettool.cpp
     )
-    add_windows_resources(bitcoin-wallet bitcoin-wallet-res.rc)
-    target_link_libraries(bitcoin-wallet
+    add_windows_resources(namseokcoin-wallet namseokcoin-wallet-res.rc)
+    target_link_libraries(namseokcoin-wallet
       core_interface
-      bitcoin_wallet
-      bitcoin_common
-      bitcoin_util
+      namseokcoin_wallet
+      namseokcoin_common
+      namseokcoin_util
       Boost::headers
     )
-    list(APPEND installable_targets bitcoin-wallet)
+    list(APPEND installable_targets namseokcoin-wallet)
   endif()
 endif()
 
 
-# P2P and RPC server functionality used by `bitcoind` and `bitcoin-qt` executables.
-add_library(bitcoin_node STATIC EXCLUDE_FROM_ALL
+# P2P and RPC server functionality used by `namseokcoind` and `namseokcoin-qt` executables.
+add_library(namseokcoin_node STATIC EXCLUDE_FROM_ALL
   addrdb.cpp
   addrman.cpp
   banman.cpp
@@ -280,14 +280,14 @@ add_library(bitcoin_node STATIC EXCLUDE_FROM_ALL
   validation.cpp
   validationinterface.cpp
   versionbits.cpp
-  $<$<TARGET_EXISTS:bitcoin_wallet>:wallet/init.cpp>
-  $<$<NOT:$<TARGET_EXISTS:bitcoin_wallet>>:dummywallet.cpp>
+  $<$<TARGET_EXISTS:namseokcoin_wallet>:wallet/init.cpp>
+  $<$<NOT:$<TARGET_EXISTS:namseokcoin_wallet>>:dummywallet.cpp>
 )
-target_link_libraries(bitcoin_node
+target_link_libraries(namseokcoin_node
   PRIVATE
     core_interface
-    bitcoin_common
-    bitcoin_util
+    namseokcoin_common
+    namseokcoin_util
     leveldb
     minisketch
     univalue
@@ -295,104 +295,104 @@ target_link_libraries(bitcoin_node
     $<TARGET_NAME_IF_EXISTS:libevent::libevent>
     $<TARGET_NAME_IF_EXISTS:libevent::pthreads>
     $<TARGET_NAME_IF_EXISTS:MiniUPnPc::MiniUPnPc>
-    $<TARGET_NAME_IF_EXISTS:bitcoin_zmq>
+    $<TARGET_NAME_IF_EXISTS:namseokcoin_zmq>
     $<TARGET_NAME_IF_EXISTS:USDT::headers>
 )
 
 
-# Bitcoin Core bitcoind.
+# Namseokcoin Core namseokcoind.
 if(BUILD_DAEMON)
-  add_executable(bitcoind
-    bitcoind.cpp
-    init/bitcoind.cpp
+  add_executable(namseokcoind
+    namseokcoind.cpp
+    init/namseokcoind.cpp
   )
-  add_windows_resources(bitcoind bitcoind-res.rc)
-  target_link_libraries(bitcoind
+  add_windows_resources(namseokcoind namseokcoind-res.rc)
+  target_link_libraries(namseokcoind
     core_interface
-    bitcoin_node
-    $<TARGET_NAME_IF_EXISTS:bitcoin_wallet>
+    namseokcoin_node
+    $<TARGET_NAME_IF_EXISTS:namseokcoin_wallet>
   )
-  list(APPEND installable_targets bitcoind)
+  list(APPEND installable_targets namseokcoind)
 endif()
 if(WITH_MULTIPROCESS)
-  add_executable(bitcoin-node
-    bitcoind.cpp
-    init/bitcoin-node.cpp
+  add_executable(namseokcoin-node
+    namseokcoind.cpp
+    init/namseokcoin-node.cpp
   )
-  target_link_libraries(bitcoin-node
+  target_link_libraries(namseokcoin-node
     core_interface
-    bitcoin_node
-    bitcoin_ipc
-    $<TARGET_NAME_IF_EXISTS:bitcoin_wallet>
+    namseokcoin_node
+    namseokcoin_ipc
+    $<TARGET_NAME_IF_EXISTS:namseokcoin_wallet>
   )
-  list(APPEND installable_targets bitcoin-node)
+  list(APPEND installable_targets namseokcoin-node)
 
   if(BUILD_TESTS)
-    # bitcoin_ipc_test library target is defined here in src/CMakeLists.txt
+    # namseokcoin_ipc_test library target is defined here in src/CMakeLists.txt
     # instead of src/test/CMakeLists.txt so capnp files in src/test/ are able to
     # reference capnp files in src/ipc/capnp/ by relative path. The Cap'n Proto
     # compiler only allows importing by relative path when the importing and
     # imported files are underneath the same compilation source prefix, so the
     # source prefix must be src/, not src/test/
-    add_library(bitcoin_ipc_test STATIC EXCLUDE_FROM_ALL
+    add_library(namseokcoin_ipc_test STATIC EXCLUDE_FROM_ALL
       test/ipc_test.cpp
     )
-    target_capnp_sources(bitcoin_ipc_test ${PROJECT_SOURCE_DIR}
+    target_capnp_sources(namseokcoin_ipc_test ${PROJECT_SOURCE_DIR}
       test/ipc_test.capnp
     )
-    add_dependencies(bitcoin_ipc_test bitcoin_ipc_headers)
+    add_dependencies(namseokcoin_ipc_test namseokcoin_ipc_headers)
   endif()
 endif()
 
 
-add_library(bitcoin_cli STATIC EXCLUDE_FROM_ALL
+add_library(namseokcoin_cli STATIC EXCLUDE_FROM_ALL
   compat/stdin.cpp
   rpc/client.cpp
 )
-target_link_libraries(bitcoin_cli
+target_link_libraries(namseokcoin_cli
   PUBLIC
     core_interface
     univalue
 )
 
 
-# Bitcoin Core RPC client
+# Namseokcoin Core RPC client
 if(BUILD_CLI)
-  add_executable(bitcoin-cli bitcoin-cli.cpp)
-  add_windows_resources(bitcoin-cli bitcoin-cli-res.rc)
-  target_link_libraries(bitcoin-cli
+  add_executable(namseokcoin-cli namseokcoin-cli.cpp)
+  add_windows_resources(namseokcoin-cli namseokcoin-cli-res.rc)
+  target_link_libraries(namseokcoin-cli
     core_interface
-    bitcoin_cli
-    bitcoin_common
-    bitcoin_util
+    namseokcoin_cli
+    namseokcoin_common
+    namseokcoin_util
     $<TARGET_NAME_IF_EXISTS:libevent::libevent>
   )
-  list(APPEND installable_targets bitcoin-cli)
+  list(APPEND installable_targets namseokcoin-cli)
 endif()
 
 
 if(BUILD_TX)
-  add_executable(bitcoin-tx bitcoin-tx.cpp)
-  add_windows_resources(bitcoin-tx bitcoin-tx-res.rc)
-  target_link_libraries(bitcoin-tx
+  add_executable(namseokcoin-tx namseokcoin-tx.cpp)
+  add_windows_resources(namseokcoin-tx namseokcoin-tx-res.rc)
+  target_link_libraries(namseokcoin-tx
     core_interface
-    bitcoin_common
-    bitcoin_util
+    namseokcoin_common
+    namseokcoin_util
     univalue
   )
-  list(APPEND installable_targets bitcoin-tx)
+  list(APPEND installable_targets namseokcoin-tx)
 endif()
 
 
 if(BUILD_UTIL)
-  add_executable(bitcoin-util bitcoin-util.cpp)
-  add_windows_resources(bitcoin-util bitcoin-util-res.rc)
-  target_link_libraries(bitcoin-util
+  add_executable(namseokcoin-util namseokcoin-util.cpp)
+  add_windows_resources(namseokcoin-util namseokcoin-util-res.rc)
+  target_link_libraries(namseokcoin-util
     core_interface
-    bitcoin_common
-    bitcoin_util
+    namseokcoin_common
+    namseokcoin_util
   )
-  list(APPEND installable_targets bitcoin-util)
+  list(APPEND installable_targets namseokcoin-util)
 endif()
 
 
@@ -406,22 +406,22 @@ if(BUILD_KERNEL_LIB)
 endif()
 
 if(BUILD_UTIL_CHAINSTATE)
-  add_executable(bitcoin-chainstate
-    bitcoin-chainstate.cpp
+  add_executable(namseokcoin-chainstate
+    namseokcoin-chainstate.cpp
   )
   # TODO: The `SKIP_BUILD_RPATH` property setting can be deleted
   #       in the future after reordering Guix script commands to
   #       perform binary checks after the installation step.
   # Relevant discussions:
-  # - https://github.com/hebasto/bitcoin/pull/236#issuecomment-2183120953
-  # - https://github.com/bitcoin/bitcoin/pull/30312#issuecomment-2191235833
-  set_target_properties(bitcoin-chainstate PROPERTIES
+  # - https://github.com/hebasto/namseokcoin/pull/236#issuecomment-2183120953
+  # - https://github.com/namseokcoin/namseokcoin/pull/30312#issuecomment-2191235833
+  set_target_properties(namseokcoin-chainstate PROPERTIES
     SKIP_BUILD_RPATH OFF
   )
-  target_link_libraries(bitcoin-chainstate
+  target_link_libraries(namseokcoin-chainstate
     PRIVATE
       core_interface
-      bitcoinkernel
+      namseokcoinkernel
   )
 endif()
 

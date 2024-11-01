@@ -1,13 +1,13 @@
-# Copyright (c) 2024-present The Bitcoin Core developers
+# Copyright (c) 2024-present The Namseokcoin Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or https://opensource.org/license/mit/.
 
-# TODO: libbitcoinkernel is a work in progress consensus engine
+# TODO: libnamseokcoinkernel is a work in progress consensus engine
 #       library, as more and more modules are decoupled from the
 #       consensus engine, this list will shrink to only those
 #       which are absolutely necessary.
-add_library(bitcoinkernel
-  bitcoinkernel.cpp
+add_library(namseokcoinkernel
+  namseokcoinkernel.cpp
   chain.cpp
   checks.cpp
   chainparams.cpp
@@ -77,11 +77,11 @@ add_library(bitcoinkernel
   ../validationinterface.cpp
   ../versionbits.cpp
 )
-target_link_libraries(bitcoinkernel
+target_link_libraries(namseokcoinkernel
   PRIVATE
     core_interface
-    bitcoin_clientversion
-    bitcoin_crypto
+    namseokcoin_clientversion
+    namseokcoin_crypto
     leveldb
     secp256k1
     $<TARGET_NAME_IF_EXISTS:USDT::headers>
@@ -89,18 +89,18 @@ target_link_libraries(bitcoinkernel
     Boost::headers
 )
 
-# libbitcoinkernel requires default symbol visibility, explicitly
+# libnamseokcoinkernel requires default symbol visibility, explicitly
 # specify that here so that things still work even when user
 # configures with -DREDUCE_EXPORTS=ON
 #
 # Note this is a quick hack that will be removed as we
 # incrementally define what to export from the library.
-set_target_properties(bitcoinkernel PROPERTIES
+set_target_properties(namseokcoinkernel PROPERTIES
   CXX_VISIBILITY_PRESET default
 )
 
 # When building the static library, install all static libraries the
-# bitcoinkernel depends on.
+# namseokcoinkernel depends on.
 if(NOT BUILD_SHARED_LIBS)
   # Recursively get all the static libraries a target depends on and put them in libs_out
   function(get_target_static_link_libs target libs_out)
@@ -118,7 +118,7 @@ if(NOT BUILD_SHARED_LIBS)
   endfunction()
 
   set(all_kernel_static_link_libs "")
-  get_target_static_link_libs(bitcoinkernel all_kernel_static_link_libs)
+  get_target_static_link_libs(namseokcoinkernel all_kernel_static_link_libs)
 
   # LIBS_PRIVATE is substituted in the pkg-config file.
   set(LIBS_PRIVATE "")
@@ -130,11 +130,11 @@ if(NOT BUILD_SHARED_LIBS)
   string(STRIP "${LIBS_PRIVATE}" LIBS_PRIVATE)
 endif()
 
-configure_file(${PROJECT_SOURCE_DIR}/libbitcoinkernel.pc.in ${PROJECT_BINARY_DIR}/libbitcoinkernel.pc @ONLY)
-install(FILES ${PROJECT_BINARY_DIR}/libbitcoinkernel.pc DESTINATION "${CMAKE_INSTALL_LIBDIR}/pkgconfig")
+configure_file(${PROJECT_SOURCE_DIR}/libnamseokcoinkernel.pc.in ${PROJECT_BINARY_DIR}/libnamseokcoinkernel.pc @ONLY)
+install(FILES ${PROJECT_BINARY_DIR}/libnamseokcoinkernel.pc DESTINATION "${CMAKE_INSTALL_LIBDIR}/pkgconfig")
 
 include(GNUInstallDirs)
-install(TARGETS bitcoinkernel
+install(TARGETS namseokcoinkernel
   RUNTIME
     DESTINATION ${CMAKE_INSTALL_BINDIR}
     COMPONENT Kernel

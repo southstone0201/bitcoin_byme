@@ -1,9 +1,9 @@
-// Copyright (c) 2021-2022 The Bitcoin Core developers
+// Copyright (c) 2021-2022 The Namseokcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_TXORPHANAGE_H
-#define BITCOIN_TXORPHANAGE_H
+#ifndef NAMSEOKCOIN_TXORPHANAGE_H
+#define NAMSEOKCOIN_TXORPHANAGE_H
 
 #include <net.h>
 #include <primitives/block.h>
@@ -115,4 +115,4 @@ protected:
     NodeSeconds m_next_sweep{0s};
 };
 
-#endif // BITCOIN_TXORPHANAGE_H
+#endif // NAMSEOKCOIN_TXORPHANAGE_H

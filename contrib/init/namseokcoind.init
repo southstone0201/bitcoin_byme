@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+#
+#  namseokcoind The namseokcoin core server.
+#
+#
+# chkconfig: 345 80 20
+# description: namseokcoind
+# processname: namseokcoind
+#
+
+# Source function library.
+. /etc/init.d/functions
+
+# you can override defaults in /etc/sysconfig/namseokcoind, see below
+if [ -f /etc/sysconfig/namseokcoind ]; then
+        . /etc/sysconfig/namseokcoind
+fi
+
+RETVAL=0
+
+prog=namseokcoind
+# you can override the lockfile via NAMSEOKCOIND_LOCKFILE in /etc/sysconfig/namseokcoind
+lockfile=${NAMSEOKCOIND_LOCKFILE-/var/lock/subsys/namseokcoind}
+
+# namseokcoind defaults to /usr/bin/namseokcoind, override with NAMSEOKCOIND_BIN
+namseokcoind=${NAMSEOKCOIND_BIN-/usr/bin/namseokcoind}
+
+# namseokcoind opts default to -disablewallet, override with NAMSEOKCOIND_OPTS
+namseokcoind_opts=${NAMSEOKCOIND_OPTS--disablewallet}
+
+start() {
+    echo -n $"Starting $prog: "
+    daemon $DAEMONOPTS $namseokcoind $namseokcoind_opts
+    RETVAL=$?
+    echo
+    [ $RETVAL -eq 0 ] && touch $lockfile
+    return $RETVAL
+}
+
+stop() {
+    echo -n $"Stopping $prog: "
+    killproc $prog -t600
+    RETVAL=$?
+    echo
+    [ $RETVAL -eq 0 ] && rm -f $lockfile
+    return $RETVAL
+}
+
+case "$1" in
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    status)
+        status $prog
+        ;;
+    restart)
+        stop
+        start
+        ;;
+    *)
+        echo "Usage: service $prog {start|stop|status|restart}"
+        exit 1
+        ;;
+esac

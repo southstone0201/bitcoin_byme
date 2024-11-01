@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2022 The Bitcoin Core developers
+// Copyright (c) 2018-2022 The Namseokcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -868,7 +868,7 @@ BOOST_AUTO_TEST_CASE(descriptor_test)
     // Addr and raw tests
     CheckUnparsable("", "addr(asdf)", "Address is not valid"); // Invalid address
     CheckUnparsable("", "raw(asdf)", "Raw script is not hex"); // Invalid script
-    CheckUnparsable("", "raw(Ü)#00000000", "Invalid characters in payload"); // Invalid chars
+    CheckUnparsable("", "raw()#00000000", "Invalid characters in payload"); // Invalid chars
 
     Check(
         "rawtr(xprv9vHkqa6EV4sPZHYqZznhT2NPtPCjKuDKGY38FBWLvgaDx45zo9WQRUT3dKYnjwih2yJD9mkrocEZXo1ex8G81dwSM1fwqWpWkeS3v86pgKt/86'/1'/0'/1/*)#a5gn3t7k",

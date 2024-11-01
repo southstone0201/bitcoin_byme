@@ -1,0 +1,33 @@
+# /etc/conf.d/namseokcoind: config file for /etc/init.d/namseokcoind
+
+# Config file location
+#NAMSEOKCOIND_CONFIGFILE="/etc/namseokcoin/namseokcoin.conf"
+
+# What directory to write pidfile to?  (created and owned by $NAMSEOKCOIND_USER)
+#NAMSEOKCOIND_PIDDIR="/var/run/namseokcoind"
+
+# What filename to give the pidfile
+#NAMSEOKCOIND_PIDFILE="${NAMSEOKCOIND_PIDDIR}/namseokcoind.pid"
+
+# Where to write namseokcoind data (be mindful that the blockchain is large)
+#NAMSEOKCOIND_DATADIR="/var/lib/namseokcoind"
+
+# User and group to own namseokcoind process
+#NAMSEOKCOIND_USER="namseokcoin"
+#NAMSEOKCOIND_GROUP="namseokcoin"
+
+# Path to namseokcoind executable
+#NAMSEOKCOIND_BIN="/usr/bin/namseokcoind"
+
+# Nice value to run namseokcoind under
+#NAMSEOKCOIND_NICE=0
+
+# Additional options (avoid -conf and -datadir, use flags above)
+#NAMSEOKCOIND_OPTS=""
+
+# The timeout in seconds OpenRC will wait for namseokcoind to terminate
+# after a SIGTERM has been raised.
+# Note that this will be mapped as argument to start-stop-daemon's
+# '--retry' option, which means you can specify a retry schedule
+# here. For more information see man 8 start-stop-daemon.
+NAMSEOKCOIND_SIGTERM_TIMEOUT=600

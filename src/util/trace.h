@@ -1,11 +1,11 @@
-// Copyright (c) 2020-2021 The Bitcoin Core developers
+// Copyright (c) 2020-2021 The Namseokcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_UTIL_TRACE_H
-#define BITCOIN_UTIL_TRACE_H
+#ifndef NAMSEOKCOIN_UTIL_TRACE_H
+#define NAMSEOKCOIN_UTIL_TRACE_H
 
-#include <bitcoin-build-config.h> // IWYU pragma: keep
+#include <namseokcoin-build-config.h> // IWYU pragma: keep
 
 #ifdef ENABLE_TRACING
 
@@ -44,4 +44,4 @@
 #endif
 
 
-#endif // BITCOIN_UTIL_TRACE_H
+#endif // NAMSEOKCOIN_UTIL_TRACE_H

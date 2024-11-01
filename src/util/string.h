@@ -1,9 +1,9 @@
-// Copyright (c) 2019-present The Bitcoin Core developers
+// Copyright (c) 2019-present The Namseokcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_UTIL_STRING_H
-#define BITCOIN_UTIL_STRING_H
+#ifndef NAMSEOKCOIN_UTIL_STRING_H
+#define NAMSEOKCOIN_UTIL_STRING_H
 
 #include <span.h>
 #include <tinyformat.h>
@@ -243,4 +243,4 @@ std::string format(util::ConstevalFormatString<sizeof...(Args)> fmt, const Args&
 }
 } // namespace tinyformat
 
-#endif // BITCOIN_UTIL_STRING_H
+#endif // NAMSEOKCOIN_UTIL_STRING_H

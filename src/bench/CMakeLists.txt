@@ -1,12 +1,12 @@
-# Copyright (c) 2023-present The Bitcoin Core developers
+# Copyright (c) 2023-present The Namseokcoin Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or https://opensource.org/license/mit/.
 
 include(GenerateHeaders)
 generate_header_from_raw(data/block413567.raw benchmark::data)
 
-add_executable(bench_bitcoin
-  bench_bitcoin.cpp
+add_executable(bench_namseokcoin
+  bench_namseokcoin.cpp
   bench.cpp
   nanobench.cpp
   ${CMAKE_CURRENT_BINARY_DIR}/data/block413567.raw.h
@@ -55,15 +55,15 @@ add_executable(bench_bitcoin
   xor.cpp
 )
 
-target_link_libraries(bench_bitcoin
+target_link_libraries(bench_namseokcoin
   core_interface
   test_util
-  bitcoin_node
+  namseokcoin_node
   Boost::headers
 )
 
 if(ENABLE_WALLET)
-  target_sources(bench_bitcoin
+  target_sources(bench_namseokcoin
     PRIVATE
       coin_selection.cpp
       wallet_balance.cpp
@@ -72,13 +72,13 @@ if(ENABLE_WALLET)
       wallet_loading.cpp
       wallet_ismine.cpp
   )
-  target_link_libraries(bench_bitcoin bitcoin_wallet)
+  target_link_libraries(bench_namseokcoin namseokcoin_wallet)
 endif()
 
 add_test(NAME bench_sanity_check_high_priority
-  COMMAND bench_bitcoin -sanity-check -priority-level=high
+  COMMAND bench_namseokcoin -sanity-check -priority-level=high
 )
 
-install(TARGETS bench_bitcoin
+install(TARGETS bench_namseokcoin
   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
